@@ -2,28 +2,8 @@ GHCi, version 7.6.3: http://www.haskell.org/ghc/  :? for help
 Loading package ghc-prim ... linking ... done.
 Loading package integer-gmp ... linking ... done.
 Loading package base ... linking ... done.
-8
-10
-16
-6
-class Functor f where
-  fmap :: (a -> b) -> f a -> f b
-  (GHC.Base.<$) :: a -> f b -> f a
-  	-- Defined in `GHC.Base'
-instance Functor (Either a) -- Defined in `Data.Either'
-instance Functor Maybe -- Defined in `Data.Maybe'
-instance Functor [] -- Defined in `GHC.Base'
-instance Functor IO -- Defined in `GHC.Base'
-instance Functor ((->) r) -- Defined in `GHC.Base'
-instance Functor ((,) a) -- Defined in `GHC.Base'
-Just 6
 Just "3"
-Right 4
-Left 3
-class Functor f where
-  fmap :: (a -> b) -> f a -> f b
-  ...
-  	-- Defined in `GHC.Base'
+Nothing
 class Functor f where
   fmap :: (a -> b) -> f a -> f b
   (GHC.Base.<$) :: a -> f b -> f a
@@ -34,4 +14,19 @@ instance Functor [] -- Defined in `GHC.Base'
 instance Functor IO -- Defined in `GHC.Base'
 instance Functor ((->) r) -- Defined in `GHC.Base'
 instance Functor ((,) a) -- Defined in `GHC.Base'
+["1","2","3","4"]
+[2,3,4,5]
+["2","3","4","5"]
+"7"
+"7"
+"7"
+(fmap (show) ((+) 3)) 4 :: String
+("aaa",33)
+fmap (+2) :: (Functor f, Num b) => f b -> f b
+6
+fmap (replicate 3) :: Functor f => f a -> f [a]
+Left 1
+(->) :: * -> * -> *
+Ok, modules loaded: none.
+(->) :: * -> * -> *
 Leaving GHCi.
