@@ -1,0 +1,262 @@
+!<arch>
+__.PKGDEF       0           0     0     644     18945     `
+go object linux amd64 go1.3.3 X:precisestack
+
+$$
+package utils
+	import ioutil "io/ioutil"
+	import exec "os/exec"
+	import runtime "runtime"
+	import os "os"
+	import strings "strings"
+	import colorine "github.com/motemen/go-colorine"
+	import fmt "fmt"
+	func @"".Log (@"".prefixÂ·1 string, @"".messageÂ·2 string)
+	func @"".ErrorIf (@"".errÂ·2 error) (? bool)
+	func @"".DieIf (@"".errÂ·1 error)
+	func @"".PanicIf (@"".errÂ·1 error)
+	func @"".Run (@"".commandÂ·2 string, @"".argsÂ·3 ...string "esc:0x0") (? error)
+	func @"".RunSilently (@"".commandÂ·2 string, @"".argsÂ·3 ...string "esc:0x0") (? error)
+	func @"".RunInDir (@"".dirÂ·2 string, @"".commandÂ·3 string, @"".argsÂ·4 ...string "esc:0x0") (? error)
+	import io "io" // indirect
+	type @"io".Reader interface { Read(@"io".p []byte) (@"io".n int, @"io".err error) }
+	type @"io".Writer interface { Write(@"io".p []byte) (@"io".n int, @"io".err error) }
+	type @"os".dirInfo struct { @"os".buf []byte; @"os".nbuf int; @"os".bufp int }
+	type @"os".file struct { @"os".fd int; @"os".name string; @"os".dirinfo *@"os".dirInfo; @"os".nepipe int32 }
+	func (@"os".fileÂ·2 *@"os".file) @"os".close () (? error)
+	type @"os".FileMode uint32
+	func (@"os".mÂ·2 @"os".FileMode) IsDir () (? bool) { return @"os".mÂ·2 & @"os".FileMode(0x80000000) != @"os".FileMode(0x0) }
+	func (@"os".mÂ·2 @"os".FileMode) IsRegular () (? bool) { return @"os".mÂ·2 & @"os".FileMode(0x8F000000) == @"os".FileMode(0x0) }
+	func (@"os".mÂ·2 @"os".FileMode) Perm () (? @"os".FileMode) { return @"os".mÂ·2 & @"os".FileMode(0x1FF) }
+	func (@"os".mÂ·2 @"os".FileMode) String () (? string)
+	import time "time" // indirect
+	type @"time".zone struct { @"time".name string; @"time".offset int; @"time".isDST bool }
+	type @"time".zoneTrans struct { @"time".when int64; @"time".index uint8; @"time".isstd bool; @"time".isutc bool }
+	type @"time".Location struct { @"time".name string; @"time".zone []@"time".zone; @"time".tx []@"time".zoneTrans; @"time".cacheStart int64; @"time".cacheEnd int64; @"time".cacheZone *@"time".zone }
+	func (@"time".lÂ·2 *@"time".Location "esc:0x0") String () (? string)
+	func (@"time".lÂ·2 *@"time".Location "esc:0x0") @"time".firstZoneUsed () (? bool)
+	func (@"time".lÂ·2 *@"time".Location "esc:0x2") @"time".get () (? *@"time".Location)
+	func (@"time".lÂ·6 *@"time".Location "esc:0x1") @"time".lookup (@"time".secÂ·7 int64) (@"time".nameÂ·1 string, @"time".offsetÂ·2 int, @"time".isDSTÂ·3 bool, @"time".startÂ·4 int64, @"time".endÂ·5 int64)
+	func (@"time".lÂ·2 *@"time".Location "esc:0x0") @"time".lookupFirstZone () (? int)
+	func (@"time".lÂ·4 *@"time".Location "esc:0x0") @"time".lookupName (@"time".nameÂ·5 string "esc:0x0", @"time".unixÂ·6 int64) (@"time".offsetÂ·1 int, @"time".isDSTÂ·2 bool, @"time".okÂ·3 bool)
+	type @"time".Duration int64
+	func (@"time".dÂ·2 @"time".Duration) Hours () (? float64) { var @"time".hourÂ·3 @"time".Duration; ; @"time".hourÂ·3 = @"time".dÂ·2 / @"time".Duration(0x34630B8A000); var @"time".nsecÂ·4 @"time".Duration; ; @"time".nsecÂ·4 = @"time".dÂ·2 % @"time".Duration(0x34630B8A000); return float64(@"time".hourÂ·3) + float64(@"time".nsecÂ·4) * 0x9C5FFF26ED75Fp-93 }
+	func (@"time".dÂ·2 @"time".Duration) Minutes () (? float64) { var @"time".minÂ·3 @"time".Duration; ; @"time".minÂ·3 = @"time".dÂ·2 / @"time".Duration(0xDF8475800); var @"time".nsecÂ·4 @"time".Duration; ; @"time".nsecÂ·4 = @"time".dÂ·2 % @"time".Duration(0xDF8475800); return float64(@"time".minÂ·3) + float64(@"time".nsecÂ·4) * 0x9299FF347E9E9p-87 }
+	func (@"time".dÂ·2 @"time".Duration) Nanoseconds () (? int64) { return int64(@"time".dÂ·2) }
+	func (@"time".dÂ·2 @"time".Duration) Seconds () (? float64) { var @"time".secÂ·3 @"time".Duration; ; @"time".secÂ·3 = @"time".dÂ·2 / @"time".Duration(0x3B9ACA00); var @"time".nsecÂ·4 @"time".Duration; ; @"time".nsecÂ·4 = @"time".dÂ·2 % @"time".Duration(0x3B9ACA00); return float64(@"time".secÂ·3) + float64(@"time".nsecÂ·4) * 0x112E0BE826D695p-82 }
+	func (@"time".dÂ·2 @"time".Duration) String () (? string)
+	type @"time".Month int
+	func (@"time".mÂ·2 @"time".Month) String () (? string) { return @"time".months[@"time".mÂ·2 - @"time".Month(0x1)] }
+	type @"time".Weekday int
+	func (@"time".dÂ·2 @"time".Weekday) String () (? string) { return @"time".days[@"time".dÂ·2] }
+	type @"time".Time struct { @"time".sec int64; @"time".nsec uintptr; @"time".loc *@"time".Location }
+	func (@"time".tÂ·2 @"time".Time "esc:0x2") Add (@"time".dÂ·3 @"time".Duration) (? @"time".Time)
+	func (@"time".tÂ·2 @"time".Time "esc:0x2") AddDate (@"time".yearsÂ·3 int, @"time".monthsÂ·4 int, @"time".daysÂ·5 int) (? @"time".Time)
+	func (@"time".tÂ·2 @"time".Time "esc:0x0") After (@"time".uÂ·3 @"time".Time "esc:0x0") (? bool) { return @"time".tÂ·2.@"time".sec > @"time".uÂ·3.@"time".sec || @"time".tÂ·2.@"time".sec == @"time".uÂ·3.@"time".sec && @"time".tÂ·2.@"time".nsec > @"time".uÂ·3.@"time".nsec }
+	func (@"time".tÂ·2 @"time".Time "esc:0x0") Before (@"time".uÂ·3 @"time".Time "esc:0x0") (? bool) { return @"time".tÂ·2.@"time".sec < @"time".uÂ·3.@"time".sec || @"time".tÂ·2.@"time".sec == @"time".uÂ·3.@"time".sec && @"time".tÂ·2.@"time".nsec < @"time".uÂ·3.@"time".nsec }
+	func (@"time".tÂ·4 @"time".Time "esc:0x0") Clock () (@"time".hourÂ·1 int, @"time".minÂ·2 int, @"time".secÂ·3 int)
+	func (@"time".tÂ·4 @"time".Time "esc:0x0") Date () (@"time".yearÂ·1 int, @"time".monthÂ·2 @"time".Month, @"time".dayÂ·3 int)
+	func (@"time".tÂ·2 @"time".Time "esc:0x0") Day () (? int)
+	func (@"time".tÂ·2 @"time".Time "esc:0x0") Equal (@"time".uÂ·3 @"time".Time "esc:0x0") (? bool) { return @"time".tÂ·2.@"time".sec == @"time".uÂ·3.@"time".sec && @"time".tÂ·2.@"time".nsec == @"time".uÂ·3.@"time".nsec }
+	func (@"time".tÂ·2 @"time".Time "esc:0x0") Format (@"time".layoutÂ·3 string "esc:0x0") (? string)
+	func (@"time".tÂ·2 *@"time".Time "esc:0x0") GobDecode (@"time".dataÂ·3 []byte "esc:0x0") (? error)
+	func (@"time".tÂ·3 @"time".Time "esc:0x0") GobEncode () (? []byte, ? error)
+	func (@"time".tÂ·2 @"time".Time "esc:0x0") Hour () (? int)
+	func (@"time".tÂ·3 @"time".Time "esc:0x0") ISOWeek () (@"time".yearÂ·1 int, @"time".weekÂ·2 int)
+	func (@"time".tÂ·2 @"time".Time "esc:0x2") In (@"time".locÂ·3 *@"time".Location "esc:0x2") (? @"time".Time)
+	func (@"time".tÂ·2 @"time".Time "esc:0x0") IsZero () (? bool) { return @"time".tÂ·2.@"time".sec == 0x0 && @"time".tÂ·2.@"time".nsec == 0x0 }
+	func (@"time".tÂ·2 @"time".Time "esc:0x2") Local () (? @"time".Time) { @"time".tÂ·2.@"time".loc = @"time".Local; return @"time".tÂ·2 }
+	func (@"time".tÂ·2 @"time".Time "esc:0x2") Location () (? *@"time".Location) { var @"time".lÂ·3 *@"time".Location; ; @"time".lÂ·3 = @"time".tÂ·2.@"time".loc; if @"time".lÂ·3 == nil { @"time".lÂ·3 = @"time".UTC }; return @"time".lÂ·3 }
+	func (@"time".tÂ·3 @"time".Time "esc:0x0") MarshalBinary () (? []byte, ? error)
+	func (@"time".tÂ·3 @"time".Time "esc:0x0") MarshalJSON () (? []byte, ? error)
+	func (@"time".tÂ·3 @"time".Time "esc:0x0") MarshalText () (? []byte, ? error)
+	func (@"time".tÂ·2 @"time".Time "esc:0x0") Minute () (? int)
+	func (@"time".tÂ·2 @"time".Time "esc:0x0") Month () (? @"time".Month)
+	func (@"time".tÂ·2 @"time".Time "esc:0x0") Nanosecond () (? int) { return int(@"time".tÂ·2.@"time".nsec) }
+	func (@"time".tÂ·2 @"time".Time "esc:0x2") Round (@"time".dÂ·3 @"time".Duration) (? @"time".Time)
+	func (@"time".tÂ·2 @"time".Time "esc:0x0") Second () (? int)
+	func (@"time".tÂ·2 @"time".Time "esc:0x0") String () (? string)
+	func (@"time".tÂ·2 @"time".Time "esc:0x0") Sub (@"time".uÂ·3 @"time".Time "esc:0x0") (? @"time".Duration)
+	func (@"time".tÂ·2 @"time".Time "esc:0x2") Truncate (@"time".dÂ·3 @"time".Duration) (? @"time".Time)
+	func (@"time".tÂ·2 @"time".Time "esc:0x2") UTC () (? @"time".Time) { @"time".tÂ·2.@"time".loc = @"time".UTC; return @"time".tÂ·2 }
+	func (@"time".tÂ·2 @"time".Time "esc:0x0") Unix () (? int64) { return @"time".tÂ·2.@"time".sec + -0xE7791F700 }
+	func (@"time".tÂ·2 @"time".Time "esc:0x0") UnixNano () (? int64) { return (@"time".tÂ·2.@"time".sec + -0xE7791F700) * 0x3B9ACA00 + int64(@"time".tÂ·2.@"time".nsec) }
+	func (@"time".tÂ·2 *@"time".Time "esc:0x0") UnmarshalBinary (@"time".dataÂ·3 []byte "esc:0x0") (? error)
+	func (@"time".tÂ·2 *@"time".Time "esc:0x0") UnmarshalJSON (@"time".dataÂ·3 []byte "esc:0x0") (@"time".errÂ·1 error)
+	func (@"time".tÂ·2 *@"time".Time "esc:0x0") UnmarshalText (@"time".dataÂ·3 []byte "esc:0x0") (@"time".errÂ·1 error)
+	func (@"time".tÂ·2 @"time".Time "esc:0x0") Weekday () (? @"time".Weekday)
+	func (@"time".tÂ·2 @"time".Time "esc:0x0") Year () (? int)
+	func (@"time".tÂ·2 @"time".Time "esc:0x0") YearDay () (? int)
+	func (@"time".tÂ·3 @"time".Time "esc:0x0") Zone () (@"time".nameÂ·1 string, @"time".offsetÂ·2 int)
+	func (@"time".tÂ·2 @"time".Time "esc:0x0") @"time".abs () (? uint64)
+	func (@"time".tÂ·5 @"time".Time "esc:0x0") @"time".date (@"time".fullÂ·6 bool) (@"time".yearÂ·1 int, @"time".monthÂ·2 @"time".Month, @"time".dayÂ·3 int, @"time".ydayÂ·4 int)
+	func (@"time".tÂ·4 @"time".Time "esc:0x1") @"time".locabs () (@"time".nameÂ·1 string, @"time".offsetÂ·2 int, @"time".absÂ·3 uint64)
+	type @"os".FileInfo interface { IsDir() (? bool); ModTime() (? @"time".Time); Mode() (? @"os".FileMode); Name() (? string); Size() (? int64); Sys() (? interface {}) }
+	type @"os".File struct { @"os".? *@"os".file }
+	func (@"os".fÂ·2 *@"os".File) Chdir () (? error)
+	func (@"os".fÂ·2 *@"os".File) Chmod (@"os".modeÂ·3 @"os".FileMode) (? error)
+	func (@"os".fÂ·2 *@"os".File) Chown (@"os".uidÂ·3 int, @"os".gidÂ·4 int) (? error)
+	func (@"os".fÂ·2 *@"os".File) Close () (? error)
+	func (@"os".fÂ·2 *@"os".File "esc:0x0") Fd () (? uintptr) { if @"os".fÂ·2 == nil { return 0xFFFFFFFFFFFFFFFF }; return uintptr(@"os".fÂ·2.@"os".file.@"os".fd) }
+	func (@"os".fÂ·2 *@"os".File "esc:0x1") Name () (? string) { return @"os".fÂ·2.@"os".file.@"os".name }
+	func (@"os".fÂ·3 *@"os".File) Read (@"os".bÂ·4 []byte "esc:0x0") (@"os".nÂ·1 int, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File) ReadAt (@"os".bÂ·4 []byte "esc:0x0", @"os".offÂ·5 int64) (@"os".nÂ·1 int, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File "esc:0x0") Readdir (@"os".nÂ·4 int) (@"os".fiÂ·1 []@"os".FileInfo, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File "esc:0x0") Readdirnames (@"os".nÂ·4 int) (@"os".namesÂ·1 []string, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File) Seek (@"os".offsetÂ·4 int64, @"os".whenceÂ·5 int) (@"os".retÂ·1 int64, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File) Stat () (@"os".fiÂ·1 @"os".FileInfo, @"os".errÂ·2 error)
+	func (@"os".fÂ·2 *@"os".File "esc:0x0") Sync () (@"os".errÂ·1 error)
+	func (@"os".fÂ·2 *@"os".File) Truncate (@"os".sizeÂ·3 int64) (? error)
+	func (@"os".fÂ·3 *@"os".File) Write (@"os".bÂ·4 []byte "esc:0x0") (@"os".nÂ·1 int, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File) WriteAt (@"os".bÂ·4 []byte "esc:0x0", @"os".offÂ·5 int64) (@"os".nÂ·1 int, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File) WriteString (@"os".sÂ·4 string "esc:0x0") (@"os".retÂ·1 int, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File "esc:0x0") @"os".pread (@"os".bÂ·4 []byte "esc:0x0", @"os".offÂ·5 int64) (@"os".nÂ·1 int, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File "esc:0x0") @"os".pwrite (@"os".bÂ·4 []byte "esc:0x0", @"os".offÂ·5 int64) (@"os".nÂ·1 int, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File "esc:0x0") @"os".read (@"os".bÂ·4 []byte "esc:0x0") (@"os".nÂ·1 int, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File "esc:0x0") @"os".readdir (@"os".nÂ·4 int) (@"os".fiÂ·1 []@"os".FileInfo, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File "esc:0x0") @"os".readdirnames (@"os".nÂ·4 int) (@"os".namesÂ·1 []string, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File "esc:0x0") @"os".seek (@"os".offsetÂ·4 int64, @"os".whenceÂ·5 int) (@"os".retÂ·1 int64, @"os".errÂ·2 error)
+	func (@"os".fÂ·3 *@"os".File "esc:0x0") @"os".write (@"os".bÂ·4 []byte "esc:0x0") (@"os".nÂ·1 int, @"os".errÂ·2 error)
+	import syscall "syscall" // indirect
+	type @"syscall".Credential struct { Uid uint32; Gid uint32; Groups []uint32 }
+	type @"syscall".Signal int
+	func (@"syscall".sÂ·1 @"syscall".Signal) Signal () {  }
+	func (@"syscall".sÂ·2 @"syscall".Signal) String () (? string)
+	type @"syscall".SysProcAttr struct { Chroot string; Credential *@"syscall".Credential; Ptrace bool; Setsid bool; Setpgid bool; Setctty bool; Noctty bool; Ctty int; Pdeathsig @"syscall".Signal; Cloneflags uintptr }
+	type @"os".Signal interface { Signal(); String() (? string) }
+	type @"syscall".WaitStatus uint32
+	func (@"syscall".wÂ·2 @"syscall".WaitStatus) Continued () (? bool) { return @"syscall".wÂ·2 == @"syscall".WaitStatus(0xFFFF) }
+	func (@"syscall".wÂ·2 @"syscall".WaitStatus) CoreDump () (? bool)
+	func (@"syscall".wÂ·2 @"syscall".WaitStatus) ExitStatus () (? int)
+	func (@"syscall".wÂ·2 @"syscall".WaitStatus) Exited () (? bool) { return @"syscall".wÂ·2 & @"syscall".WaitStatus(0x7F) == @"syscall".WaitStatus(0x0) }
+	func (@"syscall".wÂ·2 @"syscall".WaitStatus) Signal () (? @"syscall".Signal)
+	func (@"syscall".wÂ·2 @"syscall".WaitStatus) Signaled () (? bool) { return @"syscall".wÂ·2 & @"syscall".WaitStatus(0x7F) != @"syscall".WaitStatus(0x7F) && @"syscall".wÂ·2 & @"syscall".WaitStatus(0x7F) != @"syscall".WaitStatus(0x0) }
+	func (@"syscall".wÂ·2 @"syscall".WaitStatus) StopSignal () (? @"syscall".Signal)
+	func (@"syscall".wÂ·2 @"syscall".WaitStatus) Stopped () (? bool) { return @"syscall".wÂ·2 & @"syscall".WaitStatus(0xFF) == @"syscall".WaitStatus(0x7F) }
+	func (@"syscall".wÂ·2 @"syscall".WaitStatus) TrapCause () (? int)
+	type @"syscall".Timeval struct { Sec int64; Usec int64 }
+	func (@"syscall".tvÂ·2 *@"syscall".Timeval "esc:0x0") Nano () (? int64) { return int64(@"syscall".tvÂ·2.Sec) * 0x3B9ACA00 + int64(@"syscall".tvÂ·2.Usec) * 0x3E8 }
+	func (@"syscall".tvÂ·3 *@"syscall".Timeval "esc:0x0") Unix () (@"syscall".secÂ·1 int64, @"syscall".nsecÂ·2 int64) { return int64(@"syscall".tvÂ·3.Sec), int64(@"syscall".tvÂ·3.Usec) * 0x3E8 }
+	type @"syscall".Rusage struct { Utime @"syscall".Timeval; Stime @"syscall".Timeval; Maxrss int64; Ixrss int64; Idrss int64; Isrss int64; Minflt int64; Majflt int64; Nswap int64; Inblock int64; Oublock int64; Msgsnd int64; Msgrcv int64; Nsignals int64; Nvcsw int64; Nivcsw int64 }
+	type @"os".ProcessState struct { @"os".pid int; @"os".status @"syscall".WaitStatus; @"os".rusage *@"syscall".Rusage }
+	func (@"os".pÂ·2 *@"os".ProcessState "esc:0x0") Exited () (? bool)
+	func (@"os".pÂ·2 *@"os".ProcessState "esc:0x0") Pid () (? int) { return @"os".pÂ·2.@"os".pid }
+	func (@"os".pÂ·2 *@"os".ProcessState "esc:0x0") String () (? string)
+	func (@"os".pÂ·2 *@"os".ProcessState "esc:0x0") Success () (? bool)
+	func (@"os".pÂ·2 *@"os".ProcessState "esc:0x0") Sys () (? interface {})
+	func (@"os".pÂ·2 *@"os".ProcessState "esc:0x1") SysUsage () (? interface {})
+	func (@"os".pÂ·2 *@"os".ProcessState "esc:0x0") SystemTime () (? @"time".Duration)
+	func (@"os".pÂ·2 *@"os".ProcessState "esc:0x0") UserTime () (? @"time".Duration)
+	func (@"os".pÂ·2 *@"os".ProcessState "esc:0x0") @"os".exited () (? bool)
+	func (@"os".pÂ·2 *@"os".ProcessState "esc:0x0") @"os".success () (? bool)
+	func (@"os".pÂ·2 *@"os".ProcessState "esc:0x0") @"os".sys () (? interface {}) { return @"os".pÂ·2.@"os".status }
+	func (@"os".pÂ·2 *@"os".ProcessState "esc:0x1") @"os".sysUsage () (? interface {}) { return @"os".pÂ·2.@"os".rusage }
+	func (@"os".pÂ·2 *@"os".ProcessState "esc:0x0") @"os".systemTime () (? @"time".Duration)
+	func (@"os".pÂ·2 *@"os".ProcessState "esc:0x0") @"os".userTime () (? @"time".Duration)
+	type @"os".Process struct { Pid int; @"os".handle uintptr; @"os".isdone uint32 }
+	func (@"os".pÂ·2 *@"os".Process) Kill () (? error)
+	func (@"os".pÂ·2 *@"os".Process) Release () (? error)
+	func (@"os".pÂ·2 *@"os".Process) Signal (@"os".sigÂ·3 @"os".Signal "esc:0x0") (? error)
+	func (@"os".pÂ·3 *@"os".Process) Wait () (? *@"os".ProcessState, ? error)
+	func (@"os".pÂ·2 *@"os".Process) @"os".done () (? bool)
+	func (@"os".pÂ·2 *@"os".Process) @"os".kill () (? error)
+	func (@"os".pÂ·2 *@"os".Process) @"os".release () (? error)
+	func (@"os".pÂ·1 *@"os".Process) @"os".setDone ()
+	func (@"os".pÂ·2 *@"os".Process) @"os".signal (@"os".sigÂ·3 @"os".Signal "esc:0x0") (? error)
+	func (@"os".pÂ·3 *@"os".Process) @"os".wait () (@"os".psÂ·1 *@"os".ProcessState, @"os".errÂ·2 error)
+	type @"io".Closer interface { Close() (? error) }
+	type @"io".ReadCloser interface { Close() (? error); Read(@"io".p []byte) (@"io".n int, @"io".err error) }
+	type @"io".WriteCloser interface { Close() (? error); Write(@"io".p []byte) (@"io".n int, @"io".err error) }
+	type @"os/exec".Cmd struct { Path string; Args []string; Env []string; Dir string; Stdin @"io".Reader; Stdout @"io".Writer; Stderr @"io".Writer; ExtraFiles []*@"os".File; SysProcAttr *@"syscall".SysProcAttr; Process *@"os".Process; ProcessState *@"os".ProcessState; @"os/exec".lookPathErr error; @"os/exec".finished bool; @"os/exec".childFiles []*@"os".File; @"os/exec".closeAfterStart []@"io".Closer; @"os/exec".closeAfterWait []@"io".Closer; @"os/exec".goroutine []func() (? error); @"os/exec".errch chan error }
+	func (@"os/exec".cÂ·3 *@"os/exec".Cmd) CombinedOutput () (? []byte, ? error)
+	func (@"os/exec".cÂ·3 *@"os/exec".Cmd) Output () (? []byte, ? error)
+	func (@"os/exec".cÂ·2 *@"os/exec".Cmd) Run () (? error)
+	func (@"os/exec".cÂ·2 *@"os/exec".Cmd) Start () (? error)
+	func (@"os/exec".cÂ·3 *@"os/exec".Cmd) StderrPipe () (? @"io".ReadCloser, ? error)
+	func (@"os/exec".cÂ·3 *@"os/exec".Cmd) StdinPipe () (? @"io".WriteCloser, ? error)
+	func (@"os/exec".cÂ·3 *@"os/exec".Cmd) StdoutPipe () (? @"io".ReadCloser, ? error)
+	func (@"os/exec".cÂ·2 *@"os/exec".Cmd) Wait () (? error)
+	func (@"os/exec".cÂ·2 *@"os/exec".Cmd) @"os/exec".argv () (? []string) { if len(@"os/exec".cÂ·2.Args) > 0x0 { return @"os/exec".cÂ·2.Args }; return ([]string{ 0x0:@"os/exec".cÂ·2.Path }) }
+	func (@"os/exec".cÂ·1 *@"os/exec".Cmd "esc:0x0") @"os/exec".closeDescriptors (@"os/exec".closersÂ·2 []@"io".Closer "esc:0x0")
+	func (@"os/exec".cÂ·2 *@"os/exec".Cmd "esc:0x1") @"os/exec".envv () (? []string)
+	func (@"os/exec".cÂ·3 *@"os/exec".Cmd) @"os/exec".stderr () (@"os/exec".fÂ·1 *@"os".File, @"os/exec".errÂ·2 error)
+	func (@"os/exec".cÂ·3 *@"os/exec".Cmd) @"os/exec".stdin () (@"os/exec".fÂ·1 *@"os".File, @"os/exec".errÂ·2 error)
+	func (@"os/exec".cÂ·3 *@"os/exec".Cmd) @"os/exec".stdout () (@"os/exec".fÂ·1 *@"os".File, @"os/exec".errÂ·2 error)
+	func (@"os/exec".cÂ·3 *@"os/exec".Cmd) @"os/exec".writerDescriptor (@"os/exec".wÂ·4 @"io".Writer) (@"os/exec".fÂ·1 *@"os".File, @"os/exec".errÂ·2 error)
+	type @"".RunFunc func(? *@"os/exec".Cmd) (? error)
+	var @"".CommandRunner func(@"".cmd *@"os/exec".Cmd) (? error)
+	func @"".RunCommand (@"".cmdÂ·2 *@"os/exec".Cmd) (? error)
+	type @"".RunError struct { Command *@"os/exec".Cmd; ExecError error }
+	func (@"".eÂ·2 *@"".RunError) Error () (? string)
+	func @"".init ()
+	var @"time".months [12]string
+	var @"time".days [7]string
+	var @"time".Local *@"time".Location
+	var @"time".UTC *@"time".Location
+
+$$
+ _go_.6          0           0     0     644     32215     `
+go object linux amd64 go1.3.3 X:precisestack
+
+!
+  go13ldos.a@github.com/motemen/go-colorine.a
+fmt.aio/ioutil.aos/exec.astrings.a ş"".Log  À  ®dH‹%    H;!wè    ëëHƒì(H‹%    H‰$H‹\$0H‰\$H‹\$8H‰\$H‹\$@H‰\$H‹\$HH‰\$ è    HƒÄ(Ã
+        4runtime.morestack32_noctxt   :  "".logger   œ  Xgithub.com/motemen/go-colorine.(*Logger).Log   @P  "".message  type.string "".prefix  type.string P=O
+ ` <9  ` 
+ M     TgclocalsÂ·2fd93e3103783a0fa734e90d0c092d5f TgclocalsÂ·3280bececceccd33cb74587feedb1f9f     r/home/shigemk2/go/src/github.com/motemen/ghq/utils/log.goş"".ErrorIf  €  €dH‹%    H;!wè    ëëHƒì0H‹D$8Hƒø tRH‹\$@H‰$H‹X ÿÓH‹L$H‹D$H%    H,$H‰ïH‰ŞH¥H¥H‰L$ H‰L$H‰D$(H‰D$è    ÆD$HHƒÄ0ÃÆD$H HƒÄ0Ã
+
+        4runtime.morestack24_noctxt   b 
+      ‚  "go.string."error"   Ğ  "".Log   0`  "".autotmp_0000 type.string "".~r1  type.bool "".err  type.error `\_`	_ € DH
+
+  121M 
+ 1O     TgclocalsÂ·8cb639c12a4a13c6ace27031b0f83707 TgclocalsÂ·d64e51a4c4bfeaa840e480961ec6b0b3     r/home/shigemk2/go/src/github.com/motemen/ghq/utils/log.goş"".DieIf  €  üdH‹%    H;!wè    ëëHƒì0H‹D$8Hƒø tUH‹\$@H‰$H‹X ÿÓH‹L$H‹D$H%    H,$H‰ïH‰ŞH¥H¥H‰L$ H‰L$H‰D$(H‰D$è    HÇ$   è    HƒÄ0Ã
+        4runtime.morestack16_noctxt   b 
+      ‚  "go.string."error"   Ğ  "".Log   ê  os.Exit    `  "".autotmp_0001 type.string "".err  type.error `d_ € VH  121M 
+ 1O     TgclocalsÂ·20671cc48303dfd2b9d73bba3d1850b7 TgclocalsÂ·d64e51a4c4bfeaa840e480961ec6b0b3     r/home/shigemk2/go/src/github.com/motemen/ghq/utils/log.goş"".PanicIf  À  ¬dH‹%    H;!wè    ëëHƒì H‹D$(Hƒø t-H‰$H‹\$0H‰\$è    H\$H,$H‰ïH‰ŞH¥H¥è    HƒÄ Ã
+        4runtime.morestack16_noctxt   f  runtime.convI2E   –  runtime.panic    @  "".err  type.error @<? ` d-  2BA" 
+ 2.     TgclocalsÂ·20671cc48303dfd2b9d73bba3d1850b7 TgclocalsÂ·3280bececceccd33cb74587feedb1f9f     r/home/shigemk2/go/src/github.com/motemen/ghq/utils/log.goş"".Run  à  ÈdH‹%    H;!w¸8   è    ëæHƒìHHÇD$x    HÇ„$€       H‹\$PH‰$H‹\$XH‰\$H‹\$`H‰\$H‹\$hH‰\$H‹\$pH‰\$ è    H‹T$(H‰T$0H‹%    H1íH9è„¯   H‹%    Hƒú „–   H‰D$8H‰B`H‰L$@H‰JhH‹%    H1íH9ètIH‹%    Hƒú t7H‰D$8H‰BpH‰L$@H‰JxH‰$è    H‹L$H‹D$H‰L$xH‰„$€   HƒÄHÃ‰ëÅHÇ$    HÇD$    HÇD$    è    H‹T$0H‹D$ëŒ‰écÿÿÿHÇ$    HÇD$    HÇD$    è    H‹T$0H‹D$é#ÿÿÿ 
+      (  4runtime.morestack01_noctxt   Ê  os/exec.Command   î  4go.itab.*os.File.io.Writer   –  os.Stdout   Ş  4go.itab.*os.File.io.Writer   ş  os.Stderr   À  "".RunCommand     type.*os.File   ¢  type.io.Writer   ´  4go.itab.*os.File.io.Writer   ¾   runtime.typ2Itab   ô  type.*os.File   †  type.io.Writer   ˜  4go.itab.*os.File.io.Writer   ¢   runtime.typ2Itab   p  
+"".autotmp_0005  type.*uint8 "".cmd /"type.*os/exec.Cmd "".~r2 Ptype.error "".args  type.[]string "".command  type.string áp ğ 3@80%/A  B
+A(B
+A  dºR     TgclocalsÂ·a6f5207a230ca845805ac27d5a055c5e TgclocalsÂ·61e2515c69061b8fed0e66ece719f936     r/home/shigemk2/go/src/github.com/motemen/ghq/utils/run.goş"".RunSilently  €  údH‹%    H;!w¸8   è    ëæHƒì0HÇD$`    HÇD$h    H‹\$8H‰$H‹\$@H‰\$H‹\$HH‰\$H‹\$PH‰\$H‹\$XH‰\$ è    H‹D$(H‹,%    H‰h`H‹,%    H‰hhH‹,%    H‰hpH‹,%    H‰hxH‰$è    H‹L$H‹D$H‰L$`H‰D$hHƒÄ0Ã
+      (  4runtime.morestack01_noctxt   Ä  os/exec.Command   Ş  "io/ioutil.Discard   ö "io/ioutil.Discard     "io/ioutil.Discard   ¦ "io/ioutil.Discard   À  "".RunCommand   p`  "".~r2 Ptype.error "".args  type.[]string "".command  type.string `_ À (0;%  À 
+ a_     TgclocalsÂ·c90be31f49d1b622dd7d8b665b08d828 TgclocalsÂ·3280bececceccd33cb74587feedb1f9f     r/home/shigemk2/go/src/github.com/motemen/ghq/utils/run.goş"".RunInDir     „dH‹%    H;!w¸H   è    ëæHƒìHHÇ„$ˆ       HÇ„$       H‹\$`H‰$H‹\$hH‰\$H‹\$pH‰\$H‹\$xH‰\$H‹œ$€   H‰\$ è    H‹T$(H‰T$0H‹%    H1íH9è„Ç   H‹%    Hƒú „®   H‰D$8H‰B`H‰L$@H‰JhH‹%    H1íH9èt^H‹%    Hƒú tLH‰D$8H‰BpH‰L$@H‰JxH‹l$PH‰j@H‹l$XH‰jHH‰$è    H‹L$H‹D$H‰Œ$ˆ   H‰„$   HƒÄHÃ‰ë°HÇ$    HÇD$    HÇD$    è    H‹T$0H‹D$étÿÿÿ‰éKÿÿÿHÇ$    HÇD$    HÇD$    è    H‹T$0H‹D$éÿÿÿ 
+      (  4runtime.morestack01_noctxt   Ö  os/exec.Command   ú  4go.itab.*os.File.io.Writer   ¢  os.Stdout   ê  4go.itab.*os.File.io.Writer   Š  os.Stderr   ğ  "".RunCommand   Æ  type.*os.File   Ø  type.io.Writer   ê  4go.itab.*os.File.io.Writer   ô   runtime.typ2Itab   °  type.*os.File   Â  type.io.Writer   Ô  4go.itab.*os.File.io.Writer   Ş   runtime.typ2Itab     "".autotmp_0015  type.*uint8 "".cmd /"type.*os/exec.Cmd "".~r3 ptype.error "".args @type.[]string "".command  type.string "".dir  type.string üu  "86C80(2C  ¹B
+A+B
+A  jÏW     TgclocalsÂ·ad7bd6be73ec3762b237a3b67623672d TgclocalsÂ·61e2515c69061b8fed0e66ece719f936     r/home/shigemk2/go/src/github.com/motemen/ghq/utils/run.goş"".RunCommand  €  ödH‹%    HD$øH;wè    ëæHìˆ   H‹Œ$   HÇ„$˜       HÇ„$        H‹Q H‹AHƒø‚¡  H‹yHƒÇH‰ÁHÿÉH‰ĞHÿÈH‰|$pH‰<$H‰L$xH‰L$H‰„$€   H‰D$H%    H|$H‰ŞH¥H¥è    H‹L$(H‹D$0H‹œ$   Hƒû „1  H‹sH‹SH‹k H‰¬$€   H‰t$pHƒú H‰T$x†  H,$H‰ïH¥H¥H‰L$`H‰L$H‰D$hH‰D$è    H‹œ$   H‰$H‹%    H‹ÿÓH‹L$H‹D$H‰D$XHƒù H‰L$P„‡   HÇ$    è    H‹D$H‹¬$   H‰(H‹l$PH‰hH‹l$XH‰hH‰D$HH‹%    H1íH9ètH‹\$HH‰œ$    H‰„$˜   HÄˆ   ÃHÇ$    HÇD$    HÇD$    è    H‹D$ë½HÇ„$˜       HÇ„$        HÄˆ   Ãè    ‰éÈşÿÿè     
+      (  4runtime.morestack24_noctxt   –  go.string." "   ¸  strings.Join   ˆ  "".Log   °   "".CommandRunner   ¾ 
+      †   type."".RunError     runtime.new   î  4go.itab.*"".RunError.error   È  "type.*"".RunError   Ú  type.error   ì  4go.itab.*"".RunError.error   ö   runtime.typ2Itab   Î  $runtime.panicindex   ê  $runtime.panicslice   0  "".autotmp_0025 "type.*"".RunError "".autotmp_0024 Ÿtype.uint64 "".autotmp_0023 type.uint64 "".autotmp_0022  "type.*"".RunError "".autotmp_0020 Otype.string "".err otype.error "".~r1 type.error "".cmd  "type.*os/exec.Cmd &!şE € "VAÇ(‡  $ œ21&"!nBA5  ›¬s,     TgclocalsÂ·6d340c3bdac448a6ef1256f331f68dd3 TgclocalsÂ·b33c3e1f9074ce2a9e35498c52d8c222     r/home/shigemk2/go/src/github.com/motemen/ghq/utils/run.goş("".(*RunError).Error     ˆdH‹%    H;!wè    ëëHƒìxHÇ„$ˆ       HÇ„$       H|$X1Àè    H\$XHƒû „ñ   H‰\$@HÇD$H   HÇD$P   HÇ$    H‹œ$€   H‹+H‰l$Hƒ|$ „ª   è    H\$H‹|$@H‰ŞH¥H¥H‹¼$€   Hƒÿ tHoH<$H‰îH¥H¥è    H‹D$@H\$H‰ÇHƒÇH‰ŞH¥H¥H%    H,$H‰ïH‰ŞH¥H¥H‰D$H‹\$HH‰\$H‹\$PH‰\$ è    H‹L$(H‹D$0H‰Œ$ˆ   H‰„$   HƒÄxÃ‰ézÿÿÿ‰%    éJÿÿÿ‰éÿÿÿ
+        4runtime.morestack24_noctxt   rğ  runtime.duffzero   Î  type.string     runtime.convT2E   ö  runtime.convI2E   ¶  $go.string."%s: %s"     fmt.Sprintf   0ğ  "".autotmp_0033 o&type.[]interface {} "".autotmp_0031 ?(type.[2]interface {} "".~r0 type.string "".e  "type.*"".RunError ğïğ& Ğ v1Ÿ  ‡BA.B
+AŒ  ‡J     TgclocalsÂ·6d340c3bdac448a6ef1256f331f68dd3 TgclocalsÂ·dceacc1b9778f9703d5fb605b0dee845     r/home/shigemk2/go/src/github.com/motemen/ghq/utils/run.goş"".funcÂ·001  À  ¤dH‹%    H;!wè    ëëHƒìHÇD$(    HÇD$0    H‹\$ H‰$è    H‹L$H‹D$H‰L$(H‰D$0HƒÄÃ
+        4runtime.morestack24_noctxt   j  $os/exec.(*Cmd).Run   00  "".~r1 type.error "".cmd  "type.*os/exec.Cmd 08/ ` 
+N+5  ` 
+ 4,     TgclocalsÂ·a08e9001cb8f9d822225de3b8e406515 TgclocalsÂ·3280bececceccd33cb74587feedb1f9f     r/home/shigemk2/go/src/github.com/motemen/ghq/utils/run.goş"".init  À  ªdH‹%    H;!wè    ëëHƒìPH¶%    €û tH¶%    €ûuHƒÄPÃè    Æ%    è    è    è    è    è    è    HÇ$    HÇD$    è    H‹t$H‰4%    H4%    H‹.H‰l$@H‹~H‰|$HH4%    H|$ è    HÇ$    H‹%    H‰\$H\$@H‰\$H\$ H‰\$è    H%    H‹+H‰l$@H‹{H‰|$HH%    H|$ H‰Şè    HÇ$    H‹%    H‰\$H\$@H‰\$H\$ H‰\$è    H%    H‹+H‰l$@H‹{H‰|$HH%    H|$ H‰Şè    HÇ$    H‹%    H‰\$H\$@H‰\$H\$ H‰\$è    H%    H‹+H‰l$@H‹{H‰|$HH%    H|$ H‰Şè    HÇ$    H‹%    H‰\$H\$@H‰\$H\$ H‰\$è    H%    H‹+H‰l$@H‹{H‰|$HH%    H|$ H‰Şè    HÇ$    H‹%    H‰\$H\$@H‰\$H\$ H‰\$è    H%    H‹+H‰l$@H‹{H‰|$HH%    H|$ H‰Şè    HÇ$    H‹%    H‰\$H\$@H‰\$H\$ H‰\$è    H%    H‹+H‰l$@H‹{H‰|$HH%    H|$ H‰Şè    HÇ$    H‹%    H‰\$H\$@H‰\$H\$ H‰\$è    H%    H‹+H‰l$@H‹{H‰|$HH%    H|$ H‰Şè    HÇ$    H‹%    H‰\$H\$@H‰\$H\$ H‰\$è    H%    H‹+H‰l$@H‹{H‰|$HH%    H|$ H‰Şè    HÇ$    H‹%    H‰\$H\$@H‰\$H\$ H‰\$è    H%    H‹+H‰l$@H‹{H‰|$HH%    H|$ H‰Şè    HÇ$    H‹%    H‰\$H\$@H‰\$H\$ H‰\$è    H%    H‹+H‰l$@H‹{H‰|$HH%    H|$ H‰Şè    HÇ$    H‹%    H‰\$H\$@H‰\$H\$ H‰\$è    »    H‰%    Æ%    HƒÄPÃ¨
+        4runtime.morestack00_noctxt   <  "".initdoneÂ·   X  "".initdoneÂ·   v  "runtime.throwinit   ˆ  "".initdoneÂ·   ”  strings.init     os/exec.init   ¨  io/ioutil.init   ²  fmt.init   ¼  Fgithub.com/motemen/go-colorine.init   Æ  os.init   Ö  Xtype.github.com/motemen/go-colorine.Prefixes   ò  runtime.makemap   Œ  """.statictmp_0037   œ  go.string."git"   Î  Lgithub.com/motemen/go-colorine.Verbose   â  runtime.duffcopy   ò  Xtype.github.com/motemen/go-colorine.Prefixes   ‚  """.statictmp_0037   ¾  $runtime.mapassign1   Î  go.string."hg"   €  Lgithub.com/motemen/go-colorine.Verbose   š  runtime.duffcopy   ª  Xtype.github.com/motemen/go-colorine.Prefixes   º  """.statictmp_0037   ö  $runtime.mapassign1   †  go.string."svn"   ¸  Lgithub.com/motemen/go-colorine.Verbose   Ò  runtime.duffcopy   â  Xtype.github.com/motemen/go-colorine.Prefixes   ò  """.statictmp_0037   ®  $runtime.mapassign1   ¾   go.string."skip"   ğ  Lgithub.com/motemen/go-colorine.Verbose   Š  runtime.duffcopy   š  Xtype.github.com/motemen/go-colorine.Prefixes   ª  """.statictmp_0037   æ  $runtime.mapassign1   ö  go.string."cd"   ¨  Lgithub.com/motemen/go-colorine.Verbose   Â  runtime.duffcopy   Ò  Xtype.github.com/motemen/go-colorine.Prefixes   â  """.statictmp_0037   	  $runtime.mapassign1   ®	   go.string."open"   à	  Fgithub.com/motemen/go-colorine.Warn   ú	  runtime.duffcopy   Š
+  Xtype.github.com/motemen/go-colorine.Prefixes   š
+  """.statictmp_0037   Ö
+  $runtime.mapassign1   æ
+  $go.string."exists"   ˜  Fgithub.com/motemen/go-colorine.Warn   ²  runtime.duffcopy   Â  Xtype.github.com/motemen/go-colorine.Prefixes   Ò  """.statictmp_0037     $runtime.mapassign1     &go.string."warning"   Ğ  Fgithub.com/motemen/go-colorine.Warn   ê  runtime.duffcopy   ú  Xtype.github.com/motemen/go-colorine.Prefixes   Š  """.statictmp_0037   Æ  $runtime.mapassign1   Ö  ,go.string."authorized"   ˆ  Jgithub.com/motemen/go-colorine.Notice   ¢  runtime.duffcopy   ²  Xtype.github.com/motemen/go-colorine.Prefixes   Â  """.statictmp_0037   ş  $runtime.mapassign1     "go.string."error"   À  Hgithub.com/motemen/go-colorine.Error   Ú  runtime.duffcopy   ê  Xtype.github.com/motemen/go-colorine.Prefixes   ú  """.statictmp_0037   ¶  $runtime.mapassign1   Æ  go.string.""   ø  Fgithub.com/motemen/go-colorine.Info   ’  runtime.duffcopy   ¢  Xtype.github.com/motemen/go-colorine.Prefixes   ²  """.statictmp_0037   î  $runtime.mapassign1   ø  "".funcÂ·001Â·f   ˆ   "".CommandRunner   –  "".initdoneÂ·       "".autotmp_0039 _Ztype.github.com/motemen/go-colorine.TextStyle "".autotmp_0038 type.string    Ÿ ÚŸ g”% zgA”( j :>01aBAWBAWBAWBAWBAWBAWBAWBAWBAWBAWBA%  :¤Â     TgclocalsÂ·0115f8d53b75c1696444f08ad03251d9 TgclocalsÂ·8d3f436d5f3cdeba854cbf1900c5ec8f     r/home/shigemk2/go/src/github.com/motemen/ghq/utils/run.gor/home/shigemk2/go/src/github.com/motemen/ghq/utils/log.goş,type..hash."".RunError    dH‹%    H;!wè    ëëHƒìH‹\$ H‰$HÇD$   H‹\$0H‰\$Hƒ|$ tBè    H‹\$ H‰$HÇD$   H‹\$0H‰\$Hƒ|$ tHƒD$è    HƒÄÃ‰%    ëç‰%    ëµ
+        4runtime.morestack24_noctxt   |  runtime.memhash   Ú  "runtime.interhash   00  "".p  "type.*"".RunError "".s type.uintptr "".h  type.*uintptr 0\/0    =21*21 
+ =S     TgclocalsÂ·c34189e3b824b0bbe5cf2ca4e567d435 TgclocalsÂ·3280bececceccd33cb74587feedb1f9f     r/home/shigemk2/go/src/github.com/motemen/ghq/utils/log.goş(type..eq."".RunError À  ¸dH‹%    H;!wè    ëëHƒìHH‹T$`H‹D$hH‹|$PH‹H‹(H9ëtÆ HƒÄHÃH‹HH‹pH‹BH‹RH9ÈuDH‰D$(H‰$H‰T$0H‰T$H‰L$8H‰L$H‰t$@H‰t$è    H‹|$PH¶\$ €û tÆHƒÄHÃÆ HƒÄHÃ
+        4runtime.morestack32_noctxt   ğ  runtime.ifaceeq   @  "".autotmp_0041 ?type.error "".autotmp_0040 type.error "".q 0"type.*"".RunError "".p  "type.*"".RunError "".s type.uintptr 
+"".eq  type.*bool *!X      wR
+Q 
+ w)     TgclocalsÂ·42ea2d2340f90cf3f379f66fe4b2d382 TgclocalsÂ·44568aa369055d8938d809aa5d80843b     r/home/shigemk2/go/src/github.com/motemen/ghq/utils/log.goş4type..hash.[2]interface {} à  ÚdH‹%    H;!wè    ëëHƒì0H‹D$8H1ÉHÇD$    H‹l$ H9é}pH‰L$(H‹HÁãH‹(HÁí=H	ëH‰H‹(I¸¿c»kïR I¯èH‰(H‰$HÇD$   H‹\$HHƒû t0H‰ÍHkíHëH‰\$è    H‹D$8H‹L$(HÿÁH‹l$ H9é|HƒÄ0Ã‰ëÌ
+        4runtime.morestack24_noctxt   ’  (runtime.nilinterhash   0`  "".autotmp_0043 type.int "".autotmp_0042 type.int "".i /type.int "".p  *type.*[2]interface {} "".s type.uintptr "".h  type.*uintptr `_` ° °  ˆ2
+1  ˆ(     TgclocalsÂ·c34189e3b824b0bbe5cf2ca4e567d435 TgclocalsÂ·3280bececceccd33cb74587feedb1f9f     r/home/shigemk2/go/src/github.com/motemen/ghq/utils/log.goş0type..eq.[2]interface {} €  âdH‹%    H;!wè    ëëHƒì`H1ÀHÇD$0   H‹l$0H9è–   H‰D$8H‹œ$€   Hƒû „    H‰ÅHkíHëH‹H‹sH‹\$xHƒû t}H‰ÅHkíHëH‹H‹SH9ÈuZH‰D$@H‰$H‰T$HH‰T$H‰L$PH‰L$H‰t$XH‰t$è    H¶\$ €û t#H‹D$8HÿÀH‹l$0H9èŒjÿÿÿH‹\$hÆHƒÄ`ÃH‹\$hÆ HƒÄ`Ã‰é|ÿÿÿ‰éYÿÿÿ
+        4runtime.morestack32_noctxt   È  runtime.efaceeq   @À  "".autotmp_0047 ?"type.interface {} "".autotmp_0046 "type.interface {} "".autotmp_0045 _type.int "".autotmp_0044 Otype.int "".i otype.int "".q 0*type.*[2]interface {} "".p  *type.*[2]interface {} "".s type.uintptr 
+"".eq  type.*bool &À¼¿À¿À € €  £RQX  £]     TgclocalsÂ·42ea2d2340f90cf3f379f66fe4b2d382 TgclocalsÂ·44568aa369055d8938d809aa5d80843b     r/home/shigemk2/go/src/github.com/motemen/ghq/utils/log.goşTgclocalsÂ·3280bececceccd33cb74587feedb1f9f           şTgclocalsÂ·2fd93e3103783a0fa734e90d0c092d5f         3    ş"go.string."error" 0  ,               error    "go.string."error"   şTgclocalsÂ·d64e51a4c4bfeaa840e480961ec6b0b3              şTgclocalsÂ·8cb639c12a4a13c6ace27031b0f83707             şTgclocalsÂ·d64e51a4c4bfeaa840e480961ec6b0b3              şTgclocalsÂ·20671cc48303dfd2b9d73bba3d1850b7             şTgclocalsÂ·3280bececceccd33cb74587feedb1f9f           şTgclocalsÂ·20671cc48303dfd2b9d73bba3d1850b7             ş*4go.itab.*os.File.io.Writer     şTgclocalsÂ·61e2515c69061b8fed0e66ece719f936                   şTgclocalsÂ·a6f5207a230ca845805ac27d5a055c5e           s   s    şTgclocalsÂ·3280bececceccd33cb74587feedb1f9f           şTgclocalsÂ·c90be31f49d1b622dd7d8b665b08d828         s    şTgclocalsÂ·61e2515c69061b8fed0e66ece719f936                   şTgclocalsÂ·ad7bd6be73ec3762b237a3b67623672d           3  3   ş*4go.itab.*"".RunError.error     şgo.string." " 0  $                    go.string." "   şTgclocalsÂ·b33c3e1f9074ce2a9e35498c52d8c222 (  (          ,       şTgclocalsÂ·6d340c3bdac448a6ef1256f331f68dd3 (  (                ş$go.string."%s: %s" 0  .               %s: %s    $go.string."%s: %s"   şTgclocalsÂ·dceacc1b9778f9703d5fb605b0dee845 (  (          Ç?  À?   şTgclocalsÂ·6d340c3bdac448a6ef1256f331f68dd3 (  (                şTgclocalsÂ·3280bececceccd33cb74587feedb1f9f           şTgclocalsÂ·a08e9001cb8f9d822225de3b8e406515             şgo.string."git" 0  (               git    go.string."git"   şgo.string."hg" 0  &               hg    go.string."hg"   şgo.string."svn" 0  (               svn    go.string."svn"   ş go.string."skip" 0  *               skip     go.string."skip"   şgo.string."cd" 0  &               cd    go.string."cd"   ş go.string."open" 0  *               open     go.string."open"   ş$go.string."exists" 0  .               exists    $go.string."exists"   ş&go.string."warning" 0  0               warning    &go.string."warning"   ş,go.string."authorized" @  6        
+       authorized    ,go.string."authorized"   şgo.string."" 0  "                    go.string.""   şTgclocalsÂ·8d3f436d5f3cdeba854cbf1900c5ec8f                   şTgclocalsÂ·0115f8d53b75c1696444f08ad03251d9           ş*"".logger  Vtype.*github.com/motemen/go-colorine.Logger            """.statictmp_0037   ş* "".CommandRunner  :type.func(*os/exec.Cmd) error   ş*""".statictmp_0037  Ttype.github.com/motemen/go-colorine.Logger   ş,"".initdoneÂ·  type.uint8   ş"".LogÂ·f              "".Log   ş^github.com/motemen/go-colorine.(*Logger).LogÂ·f              Xgithub.com/motemen/go-colorine.(*Logger).Log   ş"".ErrorIfÂ·f              "".ErrorIf   ş,runtime.throwreturnÂ·f              &runtime.throwreturn   ş"".DieIfÂ·f              "".DieIf   şos.ExitÂ·f              os.Exit   ş"".PanicIfÂ·f              "".PanicIf   ş$runtime.convI2EÂ·f              runtime.convI2E   ş runtime.panicÂ·f              runtime.panic   ş"".RunÂ·f              "".Run   ş$os/exec.CommandÂ·f              os/exec.Command   ş&runtime.typ2ItabÂ·f               runtime.typ2Itab   ş "".RunCommandÂ·f              "".RunCommand   ş""".RunSilentlyÂ·f              "".RunSilently   ş"".RunInDirÂ·f              "".RunInDir   ş*runtime.panicsliceÂ·f              $runtime.panicslice   şstrings.JoinÂ·f              strings.Join   ş*runtime.panicindexÂ·f              $runtime.panicindex   şruntime.newÂ·f              runtime.new   ş."".(*RunError).ErrorÂ·f              ("".(*RunError).Error   ş$runtime.convT2EÂ·f              runtime.convT2E   şfmt.SprintfÂ·f              fmt.Sprintf   ş"".funcÂ·001Â·f              "".funcÂ·001   ş*os/exec.(*Cmd).RunÂ·f              $os/exec.(*Cmd).Run   ş"".initÂ·f              "".init   ş(runtime.throwinitÂ·f              "runtime.throwinit   şstrings.initÂ·f              strings.init   şos/exec.initÂ·f              os/exec.init   ş"io/ioutil.initÂ·f              io/ioutil.init   şfmt.initÂ·f              fmt.init   şLgithub.com/motemen/go-colorine.initÂ·f              Fgithub.com/motemen/go-colorine.init   şos.initÂ·f              os.init   ş$runtime.makemapÂ·f              runtime.makemap   ş*runtime.mapassign1Â·f              $runtime.mapassign1   ştype..gc.string @  @                               ş"type..gc.[]string P  P       
+                               0  type..gc.string   ş(go.string."[]string" @  2               []string    (go.string."[]string"   ştype.[]string          Ó¨ó
+                                                          À  runtime.algarray   0  "type..gc.[]string   @  (go.string."[]string"   `  ,go.weak.type.*[]string   p  "runtime.zerovalue   €  type.string   ş:go.typelink.[]string/[]string              type.[]string   şTgclocalsÂ·3280bececceccd33cb74587feedb1f9f           şTgclocalsÂ·c34189e3b824b0bbe5cf2ca4e567d435         &    şTgclocalsÂ·44568aa369055d8938d809aa5d80843b              şTgclocalsÂ·42ea2d2340f90cf3f379f66fe4b2d382         ¦    ş*type..alg."".RunError @  @                                   ,type..hash."".RunError     (type..eq."".RunError       runtime.memprint   0  runtime.memcopy   ştype..gc.uint8                     ş&type..gc.os.dirInfo P  P(       
+                               0  type..gc.uint8   ş type..gc.os.file p  p(                                                   P  &type..gc.os.dirInfo   ş type..gc.os.File P  P                                      0   type..gc.os.file   ş"type..gc.*os.File P  P                                      0   type..gc.os.File   ştype..gc.uint32                     ş6type..gc.syscall.Credential P  P        
+                              0  type..gc.uint32   ş8type..gc.syscall.SysProcAttr p  p8                                                    P  6type..gc.syscall.Credential   ş0type..gc.os.ProcessState @  @                              ş$type..gc.io.Closer @  @       	                        ş*type..gc.func() error @  @                               ş&type..gc.chan error P  P                                      0  type.chan error   ş,go.string."chan error" @  6        
+       chan error    ,go.string."chan error"   ştype.chan error            "Èû]                                                                 À  runtime.algarray   0  &type..gc.chan error   @  ,go.string."chan error"   `  0go.weak.type.*chan error   p  "runtime.zerovalue   €  type.error   şBgo.typelink.chan error/chan error              type.chan error   ş(type..gc.os/exec.Cmd à  à0                     
+                      
+       (                      @       	       P       	       `       	       p       
+       €                      ˜                                     ¨               	       °       
+       È               
+       à               
+       ø               
+                            (                      P  type..gc.string   €  type..gc.string   °  "type..gc.*os.File   à  8type..gc.syscall.SysProcAttr   °  0type..gc.os.ProcessState   €  "type..gc.*os.File   °  $type..gc.io.Closer   à  $type..gc.io.Closer     *type..gc.func() error   À  type.chan error   ş(type..gc."".RunError p  p                              	                      0  (type..gc.os/exec.Cmd   ş*type..gc.*"".RunError P  P                                      0  (type..gc."".RunError   ş6go.string."*utils.RunError" @  @               *utils.RunError    6go.string."*utils.RunError"   şDtype..gc.func(*"".RunError) string @  @                               şPgo.string."func(*utils.RunError) string" `  Z               func(*utils.RunError) string    Pgo.string."func(*utils.RunError) string"   ş<type.func(*"".RunError) string          †…ò.                                                                                                                      À  runtime.algarray   0  Dtype..gc.func(*"".RunError) string   @  Pgo.string."func(*utils.RunError) string"   `  Ngo.weak.type.*func(*"".RunError) string   p  "runtime.zerovalue   ğ <type.func(*"".RunError) string   À€ <type.func(*"".RunError) string   ğ  "type.*"".RunError   €  type.string   ş"go.string."Error" 0  ,               Error    "go.string."Error"   ş,type..gc.func() string @  @                               ş2go.string."func() string" @  <               func() string    2go.string."func() string"   ş$type.func() string €  €       ¢mË                                                                                                                À  runtime.algarray   0  ,type..gc.func() string   @  2go.string."func() string"   `  6go.weak.type.*func() string   p  "runtime.zerovalue   ğ $type.func() string   Àğ $type.func() string   ğ  type.string   ş"type.*"".RunError  À  À       çLš                                                                                                                                                À  runtime.algarray   0  *type..gc.*"".RunError   @  6go.string."*utils.RunError"   `  4go.weak.type.**"".RunError   p  "runtime.zerovalue   €   type."".RunError   P "type.*"".RunError   °à "type.*"".RunError   à  "go.string."Error"   €  $type.func() string     <type.func(*"".RunError) string      ("".(*RunError).Error   °  ("".(*RunError).Error   ş4go.string."utils.RunError" @  >               utils.RunError    4go.string."utils.RunError"   ş&go.string."Command" 0  0               Command    &go.string."Command"   ş*go.string."ExecError" @  4        	       ExecError    *go.string."ExecError"   ş(go.string."RunError" @  2               RunError    (go.string."RunError"   ş type."".RunError             íp“(                                                                                                                                                                                                 *type..alg."".RunError   0  (type..gc."".RunError   @  4go.string."utils.RunError"   `  "type.*"".RunError   p  "runtime.zerovalue   €°  type."".RunError   °  &go.string."Command"   Ğ  "type.*os/exec.Cmd   €  *go.string."ExecError"      type.error   PĞ  type."".RunError   Ğ  (go.string."RunError"   à  "go.importpath."".   ğ   type."".RunError   ş*type..gc.interface {} @  @                               ş0go.string."interface {}" @  :               interface {}    0go.string."interface {}"   ş"type.interface {} °  °       çW                                                                           €  runtime.algarray   0  *type..gc.interface {}   @  0go.string."interface {}"   `  4go.weak.type.*interface {}   p  "runtime.zerovalue   €° "type.interface {}   ş.type..gc.[]interface {} P  P       
+                               0  *type..gc.interface {}   ş4go.string."[]interface {}" @  >               []interface {}    4go.string."[]interface {}"   ş&type.[]interface {}          p“ê/                                                          À  runtime.algarray   0  .type..gc.[]interface {}   @  4go.string."[]interface {}"   `  8go.weak.type.*[]interface {}   p  "runtime.zerovalue   €  "type.interface {}   şRgo.typelink.[]interface {}/[]interface {}              &type.[]interface {}   şTgclocalsÂ·3280bececceccd33cb74587feedb1f9f           şTgclocalsÂ·c34189e3b824b0bbe5cf2ca4e567d435         &    şTgclocalsÂ·44568aa369055d8938d809aa5d80843b              şTgclocalsÂ·42ea2d2340f90cf3f379f66fe4b2d382         ¦    ş2type..alg.[2]interface {} @  @                                   4type..hash.[2]interface {}     0type..eq.[2]interface {}       runtime.memprint   0  runtime.memcopy   ş0type..gc.[2]interface {} `  `                                              ş6go.string."[2]interface {}" @  @               [2]interface {}    6go.string."[2]interface {}"   ş(type.[2]interface {} °  °        ,Y¤ñ                                                                           2type..alg.[2]interface {}   0  0type..gc.[2]interface {}   @  6go.string."[2]interface {}"   `  :go.weak.type.*[2]interface {}   p  "runtime.zerovalue   €  "type.interface {}     &type.[]interface {}   şVgo.typelink.[2]interface {}/[2]interface {}              (type.[2]interface {}   ş2type..gc.*[2]interface {} P  P                                      0  0type..gc.[2]interface {}   ş8go.string."*[2]interface {}" P  B               *[2]interface {}    8go.string."*[2]interface {}"   ş*type.*[2]interface {}          ¾s-q                                                          À  runtime.algarray   0  2type..gc.*[2]interface {}   @  8go.string."*[2]interface {}"   `  <go.weak.type.**[2]interface {}   p  "runtime.zerovalue   €  (type.[2]interface {}   şBtype..gc.func(*os/exec.Cmd) error @  @                               şBgo.string."func(*exec.Cmd) error" P  L               func(*exec.Cmd) error    Bgo.string."func(*exec.Cmd) error"   ş:type.func(*os/exec.Cmd) error          QWˆ†                                                                                                                      €  runtime.algarray   0  Btype..gc.func(*os/exec.Cmd) error   @  Bgo.string."func(*exec.Cmd) error"   `  Lgo.weak.type.*func(*os/exec.Cmd) error   p  "runtime.zerovalue   ğ :type.func(*os/exec.Cmd) error   À€ :type.func(*os/exec.Cmd) error   ğ  "type.*os/exec.Cmd   €  type.error   ş&type..gc."".RunFunc @  @                               ş(type..gc.*"".RunFunc P  P                                      0  &type..gc."".RunFunc   ş4go.string."*utils.RunFunc" @  >               *utils.RunFunc    4go.string."*utils.RunFunc"   ş type.*"".RunFunc           QmO                                                          À  runtime.algarray   0  (type..gc.*"".RunFunc   @  4go.string."*utils.RunFunc"   `  2go.weak.type.**"".RunFunc   p  "runtime.zerovalue   €  type."".RunFunc   ş2go.string."utils.RunFunc" @  <               utils.RunFunc    2go.string."utils.RunFunc"   ş&go.string."RunFunc" 0  0               RunFunc    &go.string."RunFunc"   ştype."".RunFunc  à  à        î;                                                                                                                                                              €  runtime.algarray   0  &type..gc."".RunFunc   @  2go.string."utils.RunFunc"   `   type.*"".RunFunc   p  "runtime.zerovalue   ğ type."".RunFunc   À€ type."".RunFunc   ğ  "type.*os/exec.Cmd   €  type.error   P type."".RunFunc     &go.string."RunFunc"      "go.importpath."".   °à type."".RunFunc   ş*go.string."io/ioutil" @  4        	       io/ioutil    *go.string."io/ioutil"   ş0go.importpath.io/ioutil.             	          *go.string."io/ioutil"   ş&go.string."os/exec" 0  0               os/exec    &go.string."os/exec"   ş,go.importpath.os/exec.                       &go.string."os/exec"   ş&go.string."runtime" 0  0               runtime    &go.string."runtime"   ş,go.importpath.runtime.                       &go.string."runtime"   şgo.string."os" 0  &               os    go.string."os"   ş"go.importpath.os.                       go.string."os"   ş&go.string."strings" 0  0               strings    &go.string."strings"   ş,go.importpath.strings.                       &go.string."strings"   şTgo.string."github.com/motemen/go-colorine" `  ^               github.com/motemen/go-colorine    Tgo.string."github.com/motemen/go-colorine"   şZgo.importpath.github.com/motemen/go-colorine.                       Tgo.string."github.com/motemen/go-colorine"   şgo.string."fmt" 0  (               fmt    go.string."fmt"   ş$go.importpath.fmt.                       go.string."fmt"   ş2type..hash."".RunErrorÂ·f              ,type..hash."".RunError   ş$runtime.memhashÂ·f              runtime.memhash   ş(runtime.interhashÂ·f              "runtime.interhash   ş.type..eq."".RunErrorÂ·f              (type..eq."".RunError   ş$runtime.ifaceeqÂ·f              runtime.ifaceeq   ş:type..hash.[2]interface {}Â·f              4type..hash.[2]interface {}   ş.runtime.nilinterhashÂ·f              (runtime.nilinterhash   ş6type..eq.[2]interface {}Â·f              0type..eq.[2]interface {}   ş$runtime.efaceeqÂ·f              runtime.efaceeq   ş"runtime.zerovalue      ÿÿgo13ld 
