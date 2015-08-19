@@ -14,3 +14,12 @@ main = do
     print $ First (Just "one") `mappend` First (Just "two")
     -- 後のほうの引数を優先
     print $ Last (Just "one") `mappend` Last (Just "two")
+    print $ mconcat . map First $ [Nothing, Just 3, Nothing, Just 5]
+    print $ mconcat . map Last $ [Nothing, Just 3, Nothing, Just 5]
+    print $ mconcat [Nothing, Just (Sum 3), Nothing, Just (Sum 5)]
+
+    -- fmap
+    print $ fmap Last [Nothing, Just (Sum 3), Nothing, Just (Sum 5)]
+    print $ fmap Last [Nothing, Just 3, Nothing, Just 5]
+    print $ mconcat $ fmap Last [Nothing, Just 3, Nothing, Just 5]
+    print $ mconcat $ fmap First [Nothing, Just 3, Nothing, Just 5]
