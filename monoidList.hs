@@ -9,3 +9,6 @@ main = do
     print $ ("one" `mappend` "two") `mappend` "tree"
     print $ "one" `mappend` ("two" `mappend` "tree")
     print $ "one" `mappend` "two" `mappend` "tree"
+    print $ "pang" `mappend` mempty
+    print $ mconcat [[1,2],[3,6],[9]]
+    -- print $ mempty :: [a]
