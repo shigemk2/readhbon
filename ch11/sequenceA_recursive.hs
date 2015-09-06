@@ -19,4 +19,12 @@ main = do
     print $ sequenceA [[1,2,3], [], [4,5,6]]
     print $ sequenceA [[1,2,3], [4,5,6], [3,4,4], []]
 
+    print $ map (\f -> f 7) [(>4), (<10), odd]
+    print $ map (\f -> f 7) [(>4), (<10), even]
+    print $ and $ map (\f -> f 7) [(>4), (<10), even]
+    print $ or $ map (\f -> f 7) [(>4), (<10), even]
+    print $ and $ map (\f -> f 7) [(>4), (<10), odd]
+
+    print $ sequenceA [(>4), (<10), odd] 7
+    print $ and $ sequenceA [(>4), (<10), odd] 7
 
