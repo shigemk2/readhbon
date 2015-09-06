@@ -10,3 +10,5 @@ main = do
     -- pure f <*> pure x = pure (f x)
     print $ pure (+3) <*> Just 3
     -- print $ pure ((+3) $ Just 3)
+    -- u <*> pure y = pure ($ y) <*> u
+    -- print $ pure $ Just 4
