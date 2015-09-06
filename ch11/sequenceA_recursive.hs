@@ -28,3 +28,13 @@ main = do
     print $ sequenceA [(>4), (<10), odd] 7
     print $ and $ sequenceA [(>4), (<10), odd] 7
 
+    print $ [[x,y] | x <- [1,2,3], y <- [4,5,6]]
+
+    print $ sequenceA [[1,2],[3,4]]
+
+    print $ [[x,y] | x <- [1,2], y <- [3,4]]
+
+    print $ sequenceA [[1,2],[3,4],[5,6]]
+
+    print $ [[x,y,z] | x <- [1,2], y <- [3,4], z <- [5,6]]
+
