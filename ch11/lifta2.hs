@@ -10,3 +10,6 @@ main = do
     print $ (:) <$> Just 3 <*> Just [4]
     print $ liftA2 (++) (Just [1,2]) (Just [3,4])
     print $ (++) <$> Just [1,2] <*> Just [3,4]
+
+    -- fmap
+    print $ fmap ( \ x -> [x]) (Just 4)
