@@ -13,3 +13,6 @@ main = do
 
     -- fmap
     print $ fmap ( \ x -> [x]) (Just 4)
+    -- liftA2の手本
+    print $ liftA2 (:) (Just 3) (Just [4])
+    print $ (:) <$> Just 3 <*> Just [4]
