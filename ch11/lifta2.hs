@@ -16,3 +16,6 @@ main = do
     -- liftA2の手本
     print $ liftA2 (:) (Just 3) (Just [4])
     print $ (:) <$> Just 3 <*> Just [4]
+    -- map
+    print $ map ( \ f -> f 7) [(>4),(<10),odd]
+    print $ and $ map ( \ f -> f 7) [(>4),(<10),odd]
