@@ -27,3 +27,5 @@ main = do
     print $ and $ sequenceA [(>4),(<10),odd] 7
     print $ or $ sequenceA [(>4),(<10),odd] 7
     print $ or $ sequenceA [(>4),(<10),even] 2
+
+    print $ sequenceA [[1,2,3],[4,5,6]]
