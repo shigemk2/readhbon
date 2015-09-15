@@ -29,3 +29,11 @@ main = do
     print $ or $ sequenceA [(>4),(<10),even] 2
 
     print $ sequenceA [[1,2,3],[4,5,6]]
+
+    -- 内包表記
+    print $ [[x,y] | x <- [1,2,3], y <- [4,5,6]]
+    print $ [[x,y] | x <- [1,2], y <- [3,4]]
+    print $ [[x,y,z] | x <- [1,2], y <- [3,4], z <- [5,6]]
+    -- sequence
+    print $ sequenceA [[1,2],[3,4]]
+    print $ sequenceA [[1,2],[3,4],[5,6]]
