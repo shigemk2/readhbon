@@ -12,6 +12,12 @@ landRight n (left, right)
     | otherwise = Nothing
 -- バランス棒
 x -: f = f x
+-- バナナ
+banana :: Pole -> Maybe Pole
+banana _ = Nothing
+-- 豆腐
+tofu :: Pole -> Maybe Pole
+tofu _ = Just (0,0)
 
 main = do
     print $ landLeft 2 (0, 0)
@@ -29,4 +35,7 @@ main = do
     print $ return (0, 0) >>= (\x -> landRight 2 x) >>= (\x -> landLeft 2 x) >>= (\x -> landRight 2 x)
     print $ (landRight 3 (1,2) >>= (\x -> landLeft 3 x))
     print $ landRight 3 (1, 2)
+    print $ return (0, 0) >>= landLeft 1 >>= banana >>= landRight 1
+    print $ return (0, 0) >>= landLeft 1 >>= tofu >>= landRight 1
+    print $ return (0, 0) >>= landLeft 1 >>= landRight 1 >>= tofu
 
