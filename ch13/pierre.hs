@@ -19,6 +19,16 @@ banana _ = Nothing
 tofu :: Pole -> Maybe Pole
 tofu _ = Just (0,0)
 
+-- モナドを使わない選択
+routine :: Maybe Pole
+routine = case landLeft 1 (0, 0) of
+              Nothing -> Nothing
+              Just pole1 -> case landRight 4 pole1 of
+                                Nothing -> Nothing
+                                Just pole2 -> case landLeft 2 pole2 of
+                                                  Nothing -> Nothing
+                                                  Just pole3 -> landLeft 1 pole3
+
 main = do
     print $ landLeft 2 (0, 0)
     print $ landLeft 1 (1, 2)
