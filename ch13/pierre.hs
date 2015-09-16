@@ -18,4 +18,15 @@ main = do
     print $ landLeft 1 (1, 2)
     print $ landRight (-1) (1, 2)
     print $ landRight 10 (0, 3)
+    print $ landRight 1 (0, 0) >>= landLeft 2
+    -- NothingがまじるとずっとNothing
+    print $ Nothing >>= landLeft 2
+    -- print $ (0, 0) -: landLeft 1 -: landRight 4 -: landLeft (-1) -: landRight (-2)
+    -- の代わりの書き方
+    -- returnは必須
+    print $ return (0, 0) >>= landRight 2 >>= landLeft 2 >>= landRight 2
+    -- ラムダを使った書き方
+    print $ return (0, 0) >>= (\x -> landRight 2 x) >>= (\x -> landLeft 2 x) >>= (\x -> landRight 2 x)
+    print $ (landRight 3 (1,2) >>= (\x -> landLeft 3 x))
+    print $ landRight 3 (1, 2)
 
