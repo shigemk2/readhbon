@@ -9,3 +9,5 @@ main = do
     print $ "hello" == "hello"
     -- ===は存在しない
     -- print $ "hello" === "hello"
+    -- No instance for (Num [Char]) arising from a use of ‘+’
+    -- print $ 5 + "llama"
