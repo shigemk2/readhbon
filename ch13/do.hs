@@ -4,3 +4,4 @@ main = do
     -- print $ Nothing >>= ( \ x -> Just "!" >>= ( \ y -> Just (show x ++ y)))
     -- print $ Just 3 >>= ( \ x -> Just "!" >>= ( \ y -> Nothing))
     -- Just 3 >>= ( \ x -> Just "!" >>= ( \ y -> Nothing))
+    print $ Just 9 >>= (\x -> Just (x > 8))
