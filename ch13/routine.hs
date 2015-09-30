@@ -11,28 +11,14 @@ landRight n (left, right)
     | abs (left - (right + n)) < 4 = Just (left, right + n)
     | otherwise = Nothing
 
+-- 途中でバナナを踏ませる
 routine :: Maybe Pole
 routine = do
     start <- return (0, 0)
     first <- landLeft 2 start
+    Nothing
     second <- landRight 2 first
     landLeft 1 second
 
--- doを使わないと、こんな感じで超だるい
--- routine :: Maybe Pole
--- routine = case landLeft 1 (0, 0) of
---               Nothing -> Nothing
---               Just pole1 -> case landRight 4 pole1 of
---                                 Nothing -> Nothing
---                                 Just pole2 -> case landLeft 2 pole2 of
---                                                   Nothing -> Nothing
---                                                   Just pole3 -> landLeft 1 pole3
-
-
 main = do
-    print $ landLeft 2 (0, 0)
-    print $ landLeft 1 (1, 2)
-    print $ landRight (-1) (1, 2)
-    print $ landRight 10 (0, 3)
-    print $ landRight 1 (0, 0) >>= landLeft 2
     print $ routine
